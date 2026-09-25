@@ -39,7 +39,7 @@ def extract_fields(document_type: DocumentType, text: str) -> Dict[str, Extracte
                 page_reference=1
             )
             
-    elif document_type == DocumentType.OEM_AUTHORISATION:
+    elif document_type == DocumentType.OEM_AUTHORIZATION:
         auth_match = re.search(r'Auth No:\s*([A-Z0-9-]+)', text, re.IGNORECASE)
         if auth_match:
             fields["authorisation_number"] = ExtractedField(
@@ -48,7 +48,7 @@ def extract_fields(document_type: DocumentType, text: str) -> Dict[str, Extracte
                 page_reference=1
             )
             
-    elif document_type == DocumentType.MAKE_IN_INDIA:
+    elif document_type == DocumentType.MAKE_IN_INDIA_DECLARATION:
         content_match = re.search(r'Local Content:\s*([0-9]+)%', text, re.IGNORECASE)
         if content_match:
             fields["local_content_percentage"] = ExtractedField(

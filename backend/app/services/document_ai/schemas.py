@@ -8,8 +8,8 @@ class DocumentType(str, Enum):
     PAN = "PAN"
     GST = "GST"
     UDYAM = "UDYAM"
-    OEM_AUTHORISATION = "OEM_AUTHORISATION"
-    MAKE_IN_INDIA = "MAKE_IN_INDIA"
+    OEM_AUTHORIZATION = "OEM_AUTHORIZATION"
+    MAKE_IN_INDIA_DECLARATION = "MAKE_IN_INDIA_DECLARATION"
     UNKNOWN = "UNKNOWN"
 
 
@@ -35,6 +35,12 @@ class OcrResult(BaseModel):
     global_errors: List[str] = Field(default_factory=list)
 
 
+class ClassificationResult(BaseModel):
+    document_type: DocumentType
+    confidence: float
+    reason: str
+
+
 class ExtractedField(BaseModel):
     value: str
     confidence_score: float = Field(ge=0.0, le=1.0)
@@ -45,6 +51,7 @@ class DocumentResult(BaseModel):
     document_id: str
     document_type: DocumentType
     classification_confidence: float
+    classification_reason: Optional[str] = None
     extracted_fields: Dict[str, ExtractedField]
     ocr_result: OcrResult
     raw_text_excerpt: Optional[str] = None
