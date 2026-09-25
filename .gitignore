@@ -1,1 +1,66 @@
-__init__.py
+solution.md
+worksplit.md
+
+# ---------- Python ----------
+*.py[cod]
+*.pyo
+__pycache__/
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+.eggs/
+
+# ---------- Virtual environments ----------
+venv/
+.venv/
+env/
+
+# ---------- Testing / Coverage ----------
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+*.cover
+*.log
+
+# ---------- IDEs ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Node / Frontend ----------
+node_modules/
+.next/
+out/
+.turbo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Docker volumes / local data ----------
+pgdata/
+redis-data/
+minio-data/
+
+# ---------- Uploaded documents (never commit real PII) ----------
+uploaded-documents/*.pdf
+uploaded-documents/*.png
+uploaded-documents/*.jpg
+
+# ---------- Secrets ----------
+.env
+.env.*.local
+*.pem
+*.key
