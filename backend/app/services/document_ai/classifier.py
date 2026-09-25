@@ -10,7 +10,7 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
     text_upper = text.upper()
     
     # 1. PAN Classification
-    pan_pattern = re.compile(r'[A-Z]{5}[0-9]{4}[A-Z]{1}')
+    pan_pattern = re.compile(r'\b[A-Z]{5}[0-9]{4}[A-Z]{1}\b')
     if "INCOME TAX DEPARTMENT" in text_upper or "GOVT OF INDIA" in text_upper:
         if pan_pattern.search(text_upper):
             return ClassificationResult(
@@ -23,7 +23,7 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
             confidence=0.80,
             reason="Found PAN-related keywords but no valid PAN pattern."
         )
-    if "pan" in filename_lower:
+    if re.search(r'(?:^|[^a-z])pan(?:[^a-z]|$)', filename_lower):
         if pan_pattern.search(text_upper):
             return ClassificationResult(
                 document_type=DocumentType.PAN,
@@ -37,8 +37,8 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
         )
             
     # 2. GST Classification
-    gstin_pattern = re.compile(r'[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}')
-    if "GST REG" in text_upper or "GOODS AND SERVICES TAX" in text_upper or "REGISTRATION CERTIFICATE" in text_upper:
+    gstin_pattern = re.compile(r'\b[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}\b')
+    if "GST" in text_upper or "GOODS AND SERVICES TAX" in text_upper:
         if gstin_pattern.search(text_upper):
             return ClassificationResult(
                 document_type=DocumentType.GST,
@@ -50,7 +50,7 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
             confidence=0.80,
             reason="Found GST keywords but no valid GSTIN pattern."
         )
-    if "gst" in filename_lower:
+    if re.search(r'(?:^|[^a-z])gst(?:[^a-z]|$)', filename_lower):
         if gstin_pattern.search(text_upper):
             return ClassificationResult(
                 document_type=DocumentType.GST,
@@ -64,8 +64,8 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
         )
 
     # 3. UDYAM Classification
-    udyam_pattern = re.compile(r'UDYAM-[A-Z]{2}-[0-9]{2}-[0-9]+')
-    if "UDYAM REGISTRATION" in text_upper or "MSME" in text_upper:
+    udyam_pattern = re.compile(r'\bUDYAM-[A-Z]{2}-[0-9]{2}-[0-9]+\b')
+    if "UDYAM" in text_upper or "MSME" in text_upper:
         if udyam_pattern.search(text_upper):
             return ClassificationResult(
                 document_type=DocumentType.UDYAM,
@@ -77,7 +77,7 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
             confidence=0.80,
             reason="Found Udyam keywords but no valid pattern."
         )
-    if "udyam" in filename_lower:
+    if re.search(r'(?:^|[^a-z])udyam(?:[^a-z]|$)', filename_lower):
         if udyam_pattern.search(text_upper):
             return ClassificationResult(
                 document_type=DocumentType.UDYAM,
@@ -97,7 +97,7 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
             confidence=0.95,
             reason="Found explicit OEM authorization keywords in text."
         )
-    if "oem" in filename_lower and ("AUTHORISATION" in text_upper or "AUTHORIZATION" in text_upper or "AUTH" in filename_lower):
+    if re.search(r'(?:^|[^a-z])oem(?:[^a-z]|$)', filename_lower) and ("AUTHORISATION" in text_upper or "AUTHORIZATION" in text_upper or "AUTH" in filename_lower):
         return ClassificationResult(
             document_type=DocumentType.OEM_AUTHORIZATION,
             confidence=0.85,
@@ -111,7 +111,7 @@ def classify_document(filename: str, text: str) -> ClassificationResult:
             confidence=0.95,
             reason="Found explicit Make in India or local content keywords in text."
         )
-    if "mii" in filename_lower or "make_in_india" in filename_lower:
+    if re.search(r'(?:^|[^a-z])mii(?:[^a-z]|$)', filename_lower) or "make_in_india" in filename_lower:
         return ClassificationResult(
             document_type=DocumentType.MAKE_IN_INDIA_DECLARATION,
             confidence=0.85,

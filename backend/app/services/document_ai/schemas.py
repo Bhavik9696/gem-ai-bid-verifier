@@ -50,11 +50,35 @@ class ExtractedFact(BaseModel):
     evidence: str
 
 
+class ValidationStatus(str, Enum):
+    VALID = "VALID"
+    INVALID = "INVALID"
+    NEEDS_REVIEW = "NEEDS_REVIEW"
+    MISSING = "MISSING"
+
+
+class ValidationResult(BaseModel):
+    valid: bool
+    status: ValidationStatus
+    value: Optional[str] = None
+    reason: str
+
+
+class ProcessingStatus(str, Enum):
+    SUCCESS = "SUCCESS"
+    PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
+    FAILED = "FAILED"
+
+
 class DocumentResult(BaseModel):
     document_id: str
     document_type: DocumentType
     classification_confidence: float
     classification_reason: Optional[str] = None
     extracted_fields: Dict[str, ExtractedFact]
-    ocr_result: OcrResult
+    validated_fields: Dict[str, ValidationResult]
+    warnings: List[str] = Field(default_factory=list)
+    errors: List[str] = Field(default_factory=list)
+    processing_status: ProcessingStatus
+    ocr_result: Optional[OcrResult] = None
     raw_text_excerpt: Optional[str] = None
