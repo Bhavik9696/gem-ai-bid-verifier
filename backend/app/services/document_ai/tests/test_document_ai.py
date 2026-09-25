@@ -9,17 +9,18 @@ from app.services.document_ai.schemas import DocumentType, OcrResult, PageText, 
 def test_process_pan_document(mock_ocr):
     mock_ocr.return_value = OcrResult(
         document_id="doc-1",
-        pages=[PageText(page_number=1, text="INCOME TAX DEPARTMENT GOVT OF INDIA PAN ABCDE1234F Name: Aster Tech", extraction_method=ExtractionMethod.TEXT_PDF)],
+        pages=[PageText(page_number=1, text="INCOME TAX DEPARTMENT GOVT OF INDIA PAN ABCDE1234F \nLegal Name: Aster Tech", extraction_method=ExtractionMethod.TEXT_PDF)],
         total_pages=1
     )
     result = process_document("doc-1", "user_pan_card.pdf", b"dummy content")
     
     assert result.document_type == DocumentType.PAN
     assert result.classification_confidence > 0.9
-    assert "pan_number" in result.extracted_fields
-    assert result.extracted_fields["pan_number"].value == "ABCDE1234F"
-    assert result.extracted_fields["pan_number"].confidence_score > 0.9
-    assert result.extracted_fields["pan_number"].page_reference == 1
+    assert "PAN" in result.extracted_fields
+    assert result.extracted_fields["PAN"].value == "ABCDE1234F"
+    assert result.extracted_fields["PAN"].confidence > 0.9
+    assert result.extracted_fields["PAN"].page == 1
+    assert result.extracted_fields["Legal/Company Name"].value == "Aster Tech"
 
 
 @patch('app.services.document_ai._ocr_orchestrator.perform_extraction')
@@ -32,8 +33,8 @@ def test_process_gst_document(mock_ocr):
     result = process_document("doc-2", "company_gst.pdf", b"dummy content")
     
     assert result.document_type == DocumentType.GST
-    assert "gstin" in result.extracted_fields
-    assert result.extracted_fields["gstin"].value == "33ABCDE1234F1Z5"
+    assert "GSTIN" in result.extracted_fields
+    assert result.extracted_fields["GSTIN"].value == "33ABCDE1234F1Z5"
 
 
 def test_process_invalid_file_type():
@@ -57,4 +58,6 @@ def test_process_unknown_document(mock_ocr):
     result = process_document("doc-3", "random_letter.pdf", b"dummy content")
     
     assert result.document_type == DocumentType.UNKNOWN
-    assert len(result.extracted_fields) == 0
+    # Fields should exist but be null/None since they weren't found
+    assert result.extracted_fields["PAN"].value is None
+    assert result.extracted_fields["PAN"].confidence == 0.0

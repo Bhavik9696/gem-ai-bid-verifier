@@ -41,10 +41,13 @@ class ClassificationResult(BaseModel):
     reason: str
 
 
-class ExtractedField(BaseModel):
-    value: str
-    confidence_score: float = Field(ge=0.0, le=1.0)
-    page_reference: int = 1
+class ExtractedFact(BaseModel):
+    field: str
+    value: Optional[str] = None
+    confidence: float = Field(ge=0.0, le=1.0)
+    documentId: str
+    page: int = 1
+    evidence: str
 
 
 class DocumentResult(BaseModel):
@@ -52,6 +55,6 @@ class DocumentResult(BaseModel):
     document_type: DocumentType
     classification_confidence: float
     classification_reason: Optional[str] = None
-    extracted_fields: Dict[str, ExtractedField]
+    extracted_fields: Dict[str, ExtractedFact]
     ocr_result: OcrResult
     raw_text_excerpt: Optional[str] = None
