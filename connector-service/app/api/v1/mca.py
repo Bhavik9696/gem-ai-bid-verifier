@@ -6,6 +6,7 @@ Looks up a Company Identification Number in the demo MCA21 source records.
 
 from fastapi import APIRouter
 from app.data.loader import find_mca
+from app.validators import validate_cin
 from app.schemas.connector import ConnectorResponse, ConnectorMode, ConnectorStatus
 
 router = APIRouter()
@@ -17,6 +18,7 @@ router = APIRouter()
     summary="Verify a CIN/LLPIN against demo MCA21 source data",
 )
 def verify_mca(cin: str) -> ConnectorResponse:
+    cin = validate_cin(cin)
     record = find_mca(cin)
 
     if record is None:

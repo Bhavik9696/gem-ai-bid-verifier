@@ -8,6 +8,7 @@ which signals a mandatory-gate failure to the compliance engine.
 
 from fastapi import APIRouter
 from app.data.loader import find_udyam
+from app.validators import validate_udyam
 from app.schemas.connector import ConnectorResponse, ConnectorMode, ConnectorStatus
 
 router = APIRouter()
@@ -19,6 +20,7 @@ router = APIRouter()
     summary="Verify a Udyam/MSME registration number",
 )
 def verify_udyam(udyam_number: str) -> ConnectorResponse:
+    udyam_number = validate_udyam(udyam_number)
     record = find_udyam(udyam_number)
 
     if record is None:

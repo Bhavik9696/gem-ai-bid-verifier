@@ -1,0 +1,26 @@
+[
+  {
+    "pan": "AAZBD9999X",
+    "entityName": "Fraudulent Supplies Pvt Ltd",
+    "gstin": "27AAZBD9999X1ZZ",
+    "listType": "DEBARRED",
+    "listedBy": "Ministry of Finance",
+    "listedDate": "2024-03-15",
+    "reason": "Submission of forged documents in GeM tender GEM-2024-FAKE-001",
+    "orderReference": "MOF/DEBAR/2024/0315",
+    "validUpto": null,
+    "scenario": "BLACKLISTED"
+  },
+  {
+    "pan": "BBZZX9876Y",
+    "entityName": "Corrupt Systems Ltd",
+    "gstin": "09BBZZX9876Y1ZP",
+    "listType": "DEBARRED",
+    "listedBy": "CVC",
+    "listedDate": "2025-01-10",
+    "reason": "Cartel pricing in public procurement",
+    "orderReference": "CVC/DEBAR/2025/0110",
+    "validUpto": "2027-01-09",
+    "scenario": "BLACKLISTED"
+  }
+]

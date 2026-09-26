@@ -7,6 +7,7 @@ Returns EXPIRED for Crest Systems (expired letter) or VALID for others.
 
 from fastapi import APIRouter
 from app.data.loader import find_oem
+from app.validators import validate_oem_ref
 from app.schemas.connector import ConnectorResponse, ConnectorMode, ConnectorStatus
 
 router = APIRouter()
@@ -18,6 +19,7 @@ router = APIRouter()
     summary="Verify an OEM authorisation letter reference number",
 )
 def verify_oem(authorisation_number: str) -> ConnectorResponse:
+    authorisation_number = validate_oem_ref(authorisation_number)
     record = find_oem(authorisation_number)
 
     if record is None:

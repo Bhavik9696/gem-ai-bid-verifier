@@ -81,9 +81,9 @@ class TestGSTConnector:
         assert_demo_envelope(data, "VERIFIED")
         assert data["verifiedFacts"]["gstStatus"] == "ACTIVE"
 
-    # Unknown GSTIN → NOT_FOUND
+    # Unknown but correctly-formatted GSTIN → 200 NOT_FOUND
     def test_unknown_gstin_not_found(self):
-        resp = client.get("/api/v1/gst/99ZZZZZ9999Z9Z9")
+        resp = client.get("/api/v1/gst/27AAZBD9999Z1Z5")
         assert resp.status_code == 200
         data = resp.json()
         assert_demo_envelope(data, "NOT_FOUND")
@@ -130,9 +130,9 @@ class TestUdyamConnector:
         data = resp.json()
         assert_demo_envelope(data, "VERIFIED")
 
-    # Crest Systems has NO Udyam number — querying any unknown number → NOT_FOUND
+    # Crest Systems has NO Udyam — querying a valid but unregistered Udyam → NOT_FOUND
     def test_crest_systems_udyam_missing(self):
-        resp = client.get("/api/v1/udyam/UDYAM-KA-03-UNKNOWN")
+        resp = client.get("/api/v1/udyam/UDYAM-KA-03-0009999")
         assert resp.status_code == 200
         data = resp.json()
         assert_demo_envelope(data, "NOT_FOUND")

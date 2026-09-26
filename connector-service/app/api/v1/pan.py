@@ -6,6 +6,7 @@ Looks up a PAN in the demo Income Tax / PAN source records.
 
 from fastapi import APIRouter
 from app.data.loader import find_pan
+from app.validators import validate_pan
 from app.schemas.connector import ConnectorResponse, ConnectorMode, ConnectorStatus
 
 router = APIRouter()
@@ -17,6 +18,7 @@ router = APIRouter()
     summary="Verify a PAN against demo Income Tax source data",
 )
 def verify_pan(pan: str) -> ConnectorResponse:
+    pan = validate_pan(pan)
     record = find_pan(pan)
 
     if record is None:

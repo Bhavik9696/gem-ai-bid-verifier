@@ -10,6 +10,7 @@ Member 5 (compliance engine) can raise the conflict finding.
 
 from fastapi import APIRouter
 from app.data.loader import find_gst
+from app.validators import validate_gstin
 from app.schemas.connector import ConnectorResponse, ConnectorMode, ConnectorStatus
 
 router = APIRouter()
@@ -21,6 +22,7 @@ router = APIRouter()
     summary="Verify a GSTIN against demo GST source data",
 )
 def verify_gst(gstin: str) -> ConnectorResponse:
+    gstin = validate_gstin(gstin)
     record = find_gst(gstin)
 
     if record is None:

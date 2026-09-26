@@ -1,0 +1,48 @@
+[
+  {
+    "authorisationNumber": "OEM-DELL-ASTER-2024-001",
+    "authorisedEntity": "Aster Tech Private Limited",
+    "authorisedEntityPAN": "AABCA1234F",
+    "oemName": "Dell Technologies India Pvt Ltd",
+    "oemPAN": "AAACL1234D",
+    "productCategory": "Laptops, Desktops, and Servers",
+    "authorisedProducts": ["Latitude 5540", "OptiPlex 7090", "PowerEdge R750"],
+    "issueDate": "2024-04-01",
+    "expiryDate": "2027-03-31",
+    "status": "VALID",
+    "letterReference": "DELL/OEM/AUTH/2024/0412",
+    "contactPerson": "Raghav Menon",
+    "scenario": "VALID"
+  },
+  {
+    "authorisationNumber": "OEM-HP-BHARAT-2023-005",
+    "authorisedEntity": "Bharat Supplies Private Limited",
+    "authorisedEntityPAN": "AADCB5432G",
+    "oemName": "HP India Sales Pvt Ltd",
+    "oemPAN": "AADCH1234H",
+    "productCategory": "Printers and Imaging Products",
+    "authorisedProducts": ["LaserJet Pro M404", "Color LaserJet Pro M454"],
+    "issueDate": "2023-01-15",
+    "expiryDate": "2026-01-14",
+    "status": "VALID",
+    "letterReference": "HP/INDIA/OEM/2023/005",
+    "contactPerson": "Vikram Rao",
+    "scenario": "VALID"
+  },
+  {
+    "authorisationNumber": "OEM-LENOVO-CREST-2022-009",
+    "authorisedEntity": "Crest Systems Private Limited",
+    "authorisedEntityPAN": "AAHCC7891H",
+    "oemName": "Lenovo India Pvt Ltd",
+    "oemPAN": "AAACL9876L",
+    "productCategory": "Laptops and Workstations",
+    "authorisedProducts": ["ThinkPad X1 Carbon", "ThinkStation P360"],
+    "issueDate": "2022-05-10",
+    "expiryDate": "2025-05-09",
+    "status": "EXPIRED",
+    "letterReference": "LENOVO/IND/OEM/2022/009",
+    "contactPerson": "Deepak Verma",
+    "scenario": "EXPIRED",
+    "conflictNote": "OEM authorisation expired on 2025-05-09. Bid closing date is 2026-09-30. Authorisation is not valid at time of bid."
+  }
+]

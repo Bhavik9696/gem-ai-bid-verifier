@@ -8,6 +8,7 @@ fictional PANs that can be used to test the BLACKLISTED flow.
 
 from fastapi import APIRouter, Query
 from app.data.loader import find_blacklist_by_pan
+from app.validators import validate_pan
 from app.schemas.connector import ConnectorResponse, ConnectorMode, ConnectorStatus
 
 router = APIRouter()
@@ -21,6 +22,7 @@ router = APIRouter()
 def check_blacklist(
     pan: str = Query(..., description="PAN to check against debarment registry"),
 ) -> ConnectorResponse:
+    pan = validate_pan(pan)
     record = find_blacklist_by_pan(pan)
 
     if record is None:
