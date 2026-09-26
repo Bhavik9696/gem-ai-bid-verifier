@@ -1,0 +1,74 @@
+[
+  {
+    "source": "EPFO",
+    "sourceName": "Employees Provident Fund Organisation",
+    "identifier": "AABCA1234F",
+    "identifierType": "PAN",
+    "entityName": "Aster Tech Private Limited",
+    "status": "COMPLIANT",
+    "registrationNumber": "TNMAS1234567890",
+    "employeeCount": 45,
+    "lastFilingDate": "2026-09-10",
+    "returnStatus": "CURRENT",
+    "scenario": "VERIFIED"
+  },
+  {
+    "source": "ESIC",
+    "sourceName": "Employees State Insurance Corporation",
+    "identifier": "AABCA1234F",
+    "identifierType": "PAN",
+    "entityName": "Aster Tech Private Limited",
+    "status": "COMPLIANT",
+    "registrationNumber": "52-00-123456-000-0001",
+    "lastFilingDate": "2026-09-05",
+    "returnStatus": "CURRENT",
+    "scenario": "VERIFIED"
+  },
+  {
+    "source": "STARTUP_INDIA",
+    "sourceName": "Startup India - DPIIT",
+    "identifier": "AABCA1234F",
+    "identifierType": "PAN",
+    "entityName": "Aster Tech Private Limited",
+    "status": "NOT_REGISTERED",
+    "registrationNumber": null,
+    "scenario": "NOT_APPLICABLE"
+  },
+  {
+    "source": "NSIC",
+    "sourceName": "National Small Industries Corporation",
+    "identifier": "AADCB5432G",
+    "identifierType": "PAN",
+    "entityName": "Bharat Supplies Private Limited",
+    "status": "REGISTERED",
+    "registrationNumber": "NSIC-DL-2023-45678",
+    "expiryDate": "2026-12-31",
+    "scenario": "VERIFIED"
+  },
+  {
+    "source": "EPFO",
+    "sourceName": "Employees Provident Fund Organisation",
+    "identifier": "AADCB5432G",
+    "identifierType": "PAN",
+    "entityName": "Bharat Supplies Private Limited",
+    "status": "COMPLIANT",
+    "registrationNumber": "DLMAS5678901234",
+    "employeeCount": 120,
+    "lastFilingDate": "2026-09-08",
+    "returnStatus": "CURRENT",
+    "scenario": "VERIFIED"
+  },
+  {
+    "source": "EPFO",
+    "sourceName": "Employees Provident Fund Organisation",
+    "identifier": "AAHCC7891H",
+    "identifierType": "PAN",
+    "entityName": "Crest Systems Private Limited",
+    "status": "COMPLIANT",
+    "registrationNumber": "KAMAS9012345678",
+    "employeeCount": 28,
+    "lastFilingDate": "2026-08-15",
+    "returnStatus": "CURRENT",
+    "scenario": "VERIFIED"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "tenderId": "TENDER-GEM-2026-001",
+  "title": "Supply of IT Equipment and Accessories",
+  "referenceNumber": "GeM-2026-IT-001",
+  "category": "IT Equipment",
+  "buyerOrganisation": "Ministry of Electronics and IT",
+  "publishedDate": "2026-08-01",
+  "bidClosingDate": "2026-09-30",
+  "estimatedValue": 5000000,
+  "currency": "INR",
+  "eligibilityConditions": {
+    "msmeRequired": true,
+    "makeInIndiaRequired": true,
+    "localContentThreshold": 50,
+    "oemRequired": true,
+    "minimumTurnover": 2000000
+  },
+  "mandatoryDocuments": [
+    "GST Registration Certificate",
+    "PAN Card",
+    "Udyam/MSME Certificate",
+    "OEM Authorisation Letter",
+    "Make in India Declaration"
+  ],
+  "rulebookVersion": "v1.0",
+  "status": "ACTIVE"
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "udyamNumber": "UDYAM-TN-01-0001234",
+    "entityName": "Aster Tech Private Limited",
+    "pan": "AABCA1234F",
+    "gstin": "33AABCA1234F1Z5",
+    "category": "MICRO",
+    "enterpriseType": "Manufacturing",
+    "registrationDate": "2021-07-01",
+    "validUpto": null,
+    "status": "ACTIVE",
+    "nic2008ActivityCode": "2620",
+    "majorActivityDescription": "Manufacture of computers and peripheral equipment",
+    "districtIndustriesCentre": "Chennai",
+    "state": "Tamil Nadu",
+    "scenario": "VERIFIED_ACTIVE"
+  },
+  {
+    "udyamNumber": "UDYAM-DL-02-0005678",
+    "entityName": "Bharat Supplies Private Limited",
+    "pan": "AADCB5432G",
+    "gstin": "07AADCB5432G1ZK",
+    "category": "SMALL",
+    "enterpriseType": "Trading",
+    "registrationDate": "2021-09-15",
+    "validUpto": null,
+    "status": "ACTIVE",
+    "nic2008ActivityCode": "4651",
+    "majorActivityDescription": "Wholesale of computers, computer peripheral equipment and software",
+    "districtIndustriesCentre": "New Delhi",
+    "state": "Delhi",
+    "scenario": "VERIFIED_ACTIVE"
+  }
+]

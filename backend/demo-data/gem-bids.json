@@ -1,0 +1,50 @@
+[
+  {
+    "bidId": "GEM-BID-2026-001",
+    "tenderId": "TENDER-GEM-2026-001",
+    "bidderId": "BID-001",
+    "submittedAt": "2026-09-10T14:30:00Z",
+    "bidAmount": 4750000,
+    "currency": "INR",
+    "status": "SUBMITTED",
+    "documents": [
+      {"docId": "DOC-001-01", "type": "GST_CERTIFICATE", "filename": "aster_gst_cert.pdf"},
+      {"docId": "DOC-001-02", "type": "PAN_CARD", "filename": "aster_pan.pdf"},
+      {"docId": "DOC-001-03", "type": "UDYAM_CERTIFICATE", "filename": "aster_udyam.pdf"},
+      {"docId": "DOC-001-04", "type": "OEM_AUTHORISATION", "filename": "aster_oem_letter.pdf"},
+      {"docId": "DOC-001-05", "type": "MAKE_IN_INDIA_DECLARATION", "filename": "aster_mii_declaration.pdf"}
+    ]
+  },
+  {
+    "bidId": "GEM-BID-2026-002",
+    "tenderId": "TENDER-GEM-2026-001",
+    "bidderId": "BID-002",
+    "submittedAt": "2026-09-12T10:15:00Z",
+    "bidAmount": 4900000,
+    "currency": "INR",
+    "status": "SUBMITTED",
+    "documents": [
+      {"docId": "DOC-002-01", "type": "GST_CERTIFICATE", "filename": "bharat_gst_cert.pdf"},
+      {"docId": "DOC-002-02", "type": "PAN_CARD", "filename": "bharat_pan.pdf"},
+      {"docId": "DOC-002-03", "type": "UDYAM_CERTIFICATE", "filename": "bharat_udyam.pdf"},
+      {"docId": "DOC-002-04", "type": "OEM_AUTHORISATION", "filename": "bharat_oem_letter.pdf"},
+      {"docId": "DOC-002-05", "type": "MAKE_IN_INDIA_DECLARATION", "filename": "bharat_mii_declaration.pdf"}
+    ]
+  },
+  {
+    "bidId": "GEM-BID-2026-003",
+    "tenderId": "TENDER-GEM-2026-001",
+    "bidderId": "BID-003",
+    "submittedAt": "2026-09-15T09:00:00Z",
+    "bidAmount": 4600000,
+    "currency": "INR",
+    "status": "SUBMITTED",
+    "documents": [
+      {"docId": "DOC-003-01", "type": "GST_CERTIFICATE", "filename": "crest_gst_cert.pdf"},
+      {"docId": "DOC-003-02", "type": "PAN_CARD", "filename": "crest_pan.pdf"},
+      {"docId": "DOC-003-03", "type": "OEM_AUTHORISATION", "filename": "crest_oem_letter_expired.pdf"},
+      {"docId": "DOC-003-04", "type": "MAKE_IN_INDIA_DECLARATION", "filename": "crest_mii_declaration.pdf"}
+    ],
+    "notes": "Udyam certificate NOT submitted. OEM authorisation letter may be expired."
+  }
+]

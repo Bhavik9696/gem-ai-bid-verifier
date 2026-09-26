@@ -1,0 +1,39 @@
+[
+  {
+    "pan": "AABCA1234F",
+    "entityName": "Aster Tech Private Limited",
+    "entityType": "Company",
+    "status": "ACTIVE",
+    "dateOfIncorporation": "2018-04-10",
+    "assessmentYear": "2026-27",
+    "itFilingStatus": "FILED",
+    "lastFiledAY": "2025-26",
+    "linkedGSTIN": "33AABCA1234F1Z5",
+    "scenario": "VERIFIED"
+  },
+  {
+    "pan": "AADCB5432G",
+    "entityName": "Bharat Supplies Private Limited",
+    "entityType": "Company",
+    "status": "ACTIVE",
+    "dateOfIncorporation": "2015-07-15",
+    "assessmentYear": "2026-27",
+    "itFilingStatus": "FILED",
+    "lastFiledAY": "2025-26",
+    "linkedGSTIN": "07AADCB5432G1ZK",
+    "scenario": "PAN_NAME_DIFFERS_FROM_GST",
+    "conflictNote": "PAN entity name 'Bharat Supplies Pvt Ltd' does not match GST entity name 'Bharat Enterprises Pvt Ltd'"
+  },
+  {
+    "pan": "AAHCC7891H",
+    "entityName": "Crest Systems Private Limited",
+    "entityType": "Company",
+    "status": "ACTIVE",
+    "dateOfIncorporation": "2020-01-20",
+    "assessmentYear": "2026-27",
+    "itFilingStatus": "FILED",
+    "lastFiledAY": "2025-26",
+    "linkedGSTIN": "29AAHCC7891H1ZT",
+    "scenario": "VERIFIED"
+  }
+]
