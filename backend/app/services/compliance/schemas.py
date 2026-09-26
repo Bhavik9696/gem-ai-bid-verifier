@@ -215,6 +215,79 @@ class BidComplianceInput(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Evidence provenance models
+# ---------------------------------------------------------------------------
+
+class ExtractedObservation(BaseModel):
+    """
+    A single document-extracted observation for an identity field.
+    Preserves full provenance: value, confidence, document, and page.
+    Multiple observations may exist for the same field across different
+    documents or within the same document.
+    """
+    value: str | None = Field(
+        default=None,
+        description="Extracted value, or None if field was expected but not found",
+    )
+    confidence: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Extraction confidence score",
+    )
+    document_id: str = Field(
+        ...,
+        description="ID of the source document",
+    )
+    page: int | None = Field(
+        default=None,
+        description="Page number (1-indexed)",
+    )
+    document_type: str | None = Field(
+        default=None,
+        description="Classified document type, e.g. 'PAN_CARD'",
+    )
+
+
+class VerificationObservation(BaseModel):
+    """
+    A single source-verified observation for an identity field.
+    Preserves the full connector response provenance including status,
+    verified facts, timestamp, and evidence reference.
+    Multiple observations from the same source are preserved when they
+    exist (e.g. different identifiers queried against the same connector).
+    """
+    source: str = Field(
+        ...,
+        description="Connector source identifier, e.g. 'PAN_DEMO'",
+    )
+    identifier: str = Field(
+        ...,
+        description="The identifier that was sent to the connector",
+    )
+    status: str = Field(
+        ...,
+        description="Verification outcome: 'VERIFIED', 'NOT_FOUND', 'ERROR'",
+    )
+    value: str | None = Field(
+        default=None,
+        description="The specific field value extracted from verified_facts",
+    )
+    verified_facts: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Complete verified_facts payload from the connector",
+    )
+    checked_at: str | None = Field(
+        default=None,
+        description="ISO 8601 timestamp of when verification was performed",
+    )
+    evidence_reference: str | None = Field(
+        default=None,
+        description="Human-readable reference to the verification source",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Output models
 # ---------------------------------------------------------------------------
 
@@ -250,6 +323,22 @@ class MatchResult(BaseModel):
     notes: str | None = Field(
         default=None,
         description="Additional context about the comparison (e.g. similarity score)",
+    )
+
+    # --- Evidence provenance (backward-compatible, optional) ---
+    extracted_observations: list[ExtractedObservation] = Field(
+        default_factory=list,
+        description=(
+            "All document-extracted observations for this field. "
+            "Preserves every observation including lower-confidence values."
+        ),
+    )
+    verification_observations: list[VerificationObservation] = Field(
+        default_factory=list,
+        description=(
+            "All source-verified observations relevant to this field and source. "
+            "Preserves status, verified_facts, timestamps, and evidence references."
+        ),
     )
 
 
