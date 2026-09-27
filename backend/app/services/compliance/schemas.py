@@ -478,6 +478,15 @@ class ComplianceAssessment(BaseModel):
         le=100.0,
         description="Review-priority risk score (0–100)",
     )
+    verification_coverage: float = Field(
+        default=0.0,
+        ge=0.0,
+        le=100.0,
+        description=(
+            "Percentage of verification sources that returned a VERIFIED result. "
+            "Calculated by the orchestrator from connector responses."
+        ),
+    )
     risk_level: RiskLevel = Field(
         ...,
         description="Categorised risk level derived from risk_score",
