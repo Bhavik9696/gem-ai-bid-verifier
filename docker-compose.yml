@@ -3,12 +3,12 @@ version: "3.9"
 # ─────────────────────────────────────────────────────────────────────────────
 # ComplianceOS — Docker Compose
 # Owner: Member 3 (technical integrator)
-# Member 6 contributed: connector-service definition
+# Connector API: Member 6
 # ─────────────────────────────────────────────────────────────────────────────
 
 services:
 
-  # ── Shared infrastructure (Member 3 owns) ──────────────────────────────────
+  # ── Shared infrastructure ──────────────────────────────────────────────────
 
   postgres:
     image: postgres:16-alpine
@@ -53,7 +53,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Connector Service (Member 6 owns) ─────────────────────────────────────
+  # ── Canonical Connector API (Bhavik's implementation) ──────────────────────
 
   connector-service:
     build:
@@ -62,10 +62,10 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      # Mount demo-data so the connector reads source records from the host
+      # Mount shared demo records used by the connector service
       - ./backend/demo-data:/repo/backend/demo-data:ro
     environment:
-      - PYTHONUNBUFFERED=1
+      PYTHONUNBUFFERED: "1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s
@@ -73,7 +73,7 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # ── Core API (Member 3 owns — stub placeholder) ────────────────────────────
+  # ── Core API ───────────────────────────────────────────────────────────────
 
   core-api:
     build:
@@ -97,7 +97,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # ── Frontend (Member 2 owns — stub placeholder) ────────────────────────────
+  # ── Frontend ───────────────────────────────────────────────────────────────
 
   frontend:
     build:

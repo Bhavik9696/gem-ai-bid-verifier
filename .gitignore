@@ -1,5 +1,6 @@
 # Python bytecode and cache directories
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *.pyo
 
@@ -21,5 +22,13 @@ env/
 !.env.example
 !.env.template
 
+# Local databases
+*.db
+
+# Project planning documents
 solution.md
 worksplit.md
+
+integration-audit.ps1
+integration-audit.txt
+integration-audit.txtclear
