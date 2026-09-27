@@ -1,0 +1,41 @@
+[
+  {
+    "bidderId": "BID-001",
+    "legalName": "Aster Tech Private Limited",
+    "tradeName": "Aster Tech",
+    "pan": "AABCA1234F",
+    "gstin": "33AABCA1234F1Z5",
+    "udyamNumber": "UDYAM-TN-01-0001234",
+    "cin": "U72900TN2018PTC122345",
+    "authorisedSignatory": "Arun Kumar",
+    "registeredAddress": "12, Anna Salai, Chennai, Tamil Nadu 600002",
+    "category": "MSME",
+    "scenario": "COMPLIANT"
+  },
+  {
+    "bidderId": "BID-002",
+    "legalName": "Bharat Supplies Private Limited",
+    "tradeName": "Bharat Supplies",
+    "pan": "AADCB5432G",
+    "gstin": "07AADCB5432G1ZK",
+    "udyamNumber": "UDYAM-DL-02-0005678",
+    "cin": "U51909DL2015PTC281234",
+    "authorisedSignatory": "Suresh Mehta",
+    "registeredAddress": "45, Connaught Place, New Delhi 110001",
+    "category": "MSME",
+    "scenario": "NAME_CONFLICT"
+  },
+  {
+    "bidderId": "BID-003",
+    "legalName": "Crest Systems Private Limited",
+    "tradeName": "Crest Systems",
+    "pan": "AAHCC7891H",
+    "gstin": "29AAHCC7891H1ZT",
+    "udyamNumber": null,
+    "cin": "U72200KA2020PTC135678",
+    "authorisedSignatory": "Priya Sharma",
+    "registeredAddress": "78, MG Road, Bengaluru, Karnataka 560001",
+    "category": "NON-MSME",
+    "scenario": "MISSING_EXPIRED"
+  }
+]

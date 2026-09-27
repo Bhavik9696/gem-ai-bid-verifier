@@ -1,0 +1,51 @@
+[
+  {
+    "gstin": "33AABCA1234F1Z5",
+    "legalName": "Aster Tech Private Limited",
+    "tradeName": "Aster Tech",
+    "pan": "AABCA1234F",
+    "status": "ACTIVE",
+    "registrationDate": "2018-06-15",
+    "cancellationDate": null,
+    "registeredAddress": "12, Anna Salai, Chennai, Tamil Nadu 600002",
+    "stateCode": "33",
+    "returnFilingStatus": "CURRENT",
+    "lastReturnPeriod": "2026-08",
+    "taxPayerType": "Regular",
+    "businessActivity": "Manufacture and supply of IT equipment",
+    "scenario": "VERIFIED_ACTIVE"
+  },
+  {
+    "gstin": "07AADCB5432G1ZK",
+    "legalName": "Bharat Enterprises Private Limited",
+    "tradeName": "Bharat Enterprises",
+    "pan": "AADCB5432G",
+    "status": "ACTIVE",
+    "registrationDate": "2015-09-20",
+    "cancellationDate": null,
+    "registeredAddress": "45, Connaught Place, New Delhi 110001",
+    "stateCode": "07",
+    "returnFilingStatus": "CURRENT",
+    "lastReturnPeriod": "2026-08",
+    "taxPayerType": "Regular",
+    "businessActivity": "Trading of computer peripherals",
+    "scenario": "NAME_MISMATCH",
+    "conflictNote": "GST legal name 'Bharat Enterprises Pvt Ltd' does not match bid/PAN entity 'Bharat Supplies Pvt Ltd'"
+  },
+  {
+    "gstin": "29AAHCC7891H1ZT",
+    "legalName": "Crest Systems Private Limited",
+    "tradeName": "Crest Systems",
+    "pan": "AAHCC7891H",
+    "status": "ACTIVE",
+    "registrationDate": "2020-03-10",
+    "cancellationDate": null,
+    "registeredAddress": "78, MG Road, Bengaluru, Karnataka 560001",
+    "stateCode": "29",
+    "returnFilingStatus": "CURRENT",
+    "lastReturnPeriod": "2026-07",
+    "taxPayerType": "Regular",
+    "businessActivity": "IT solutions and software services",
+    "scenario": "VERIFIED_ACTIVE"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "cin": "U72900TN2018PTC122345",
+    "companyName": "Aster Tech Private Limited",
+    "pan": "AABCA1234F",
+    "companyStatus": "ACTIVE",
+    "dateOfIncorporation": "2018-04-10",
+    "registeredAddress": "12, Anna Salai, Chennai, Tamil Nadu 600002",
+    "companyCategory": "Company Limited by Shares",
+    "companySubCategory": "Non-Government Company",
+    "classOfCompany": "Private",
+    "authorisedCapital": 5000000,
+    "paidUpCapital": 2000000,
+    "lastAGMDate": "2026-06-30",
+    "lastFilingDate": "2026-07-15",
+    "directors": [
+      {"name": "Arun Kumar", "din": "12345678", "designation": "Managing Director"},
+      {"name": "Kavitha Ramesh", "din": "23456789", "designation": "Director"}
+    ],
+    "scenario": "VERIFIED_ACTIVE"
+  },
+  {
+    "cin": "U51909DL2015PTC281234",
+    "companyName": "Bharat Supplies Private Limited",
+    "pan": "AADCB5432G",
+    "companyStatus": "ACTIVE",
+    "dateOfIncorporation": "2015-07-15",
+    "registeredAddress": "45, Connaught Place, New Delhi 110001",
+    "companyCategory": "Company Limited by Shares",
+    "companySubCategory": "Non-Government Company",
+    "classOfCompany": "Private",
+    "authorisedCapital": 10000000,
+    "paidUpCapital": 5000000,
+    "lastAGMDate": "2026-07-20",
+    "lastFilingDate": "2026-08-01",
+    "directors": [
+      {"name": "Suresh Mehta", "din": "34567890", "designation": "Managing Director"},
+      {"name": "Anita Singh", "din": "45678901", "designation": "Director"}
+    ],
+    "scenario": "VERIFIED_ACTIVE"
+  },
+  {
+    "cin": "U72200KA2020PTC135678",
+    "companyName": "Crest Systems Private Limited",
+    "pan": "AAHCC7891H",
+    "companyStatus": "ACTIVE",
+    "dateOfIncorporation": "2020-01-20",
+    "registeredAddress": "78, MG Road, Bengaluru, Karnataka 560001",
+    "companyCategory": "Company Limited by Shares",
+    "companySubCategory": "Non-Government Company",
+    "classOfCompany": "Private",
+    "authorisedCapital": 3000000,
+    "paidUpCapital": 1500000,
+    "lastAGMDate": "2026-06-15",
+    "lastFilingDate": "2026-07-10",
+    "directors": [
+      {"name": "Priya Sharma", "din": "56789012", "designation": "Managing Director"},
+      {"name": "Rajesh Nair", "din": "67890123", "designation": "Director"}
+    ],
+    "scenario": "VERIFIED_ACTIVE"
+  }
+]
