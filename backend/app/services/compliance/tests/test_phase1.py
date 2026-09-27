@@ -12,6 +12,7 @@ Verifies that:
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 from datetime import date
 
 from backend.app.services.compliance.schemas import (
@@ -81,20 +82,21 @@ class TestExtractedFact:
         assert fact.document_type is None
 
     def test_confidence_bounds(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError):
             ExtractedFact(
                 field="pan",
                 value="ABCDE1234F",
                 confidence=1.5,  # out of range
                 document_id="doc-001",
             )
-        with pytest.raises(Exception):
+
+        with pytest.raises(ValidationError):
             ExtractedFact(
-                field="pan",
-                value="ABCDE1234F",
-                confidence=-0.1,  # out of range
-                document_id="doc-001",
-            )
+            field="pan",
+            value="ABCDE1234F",
+            confidence=-0.1,  # out of range
+            document_id="doc-001",
+        )
 
 
 class TestVerificationResult:
