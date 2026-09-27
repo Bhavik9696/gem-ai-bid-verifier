@@ -13,8 +13,20 @@
 __pycache__/
 **/__pycache__/
 *.py[cod]
+*.pyc
 *.pyo
+*.pyd
 *$py.class
+
+# ==============================
+# Python packaging / build
+# ==============================
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
 
 # ==============================
 # Virtual environments
@@ -23,14 +35,6 @@ __pycache__/
 venv/
 env/
 ENV/
-
-# ==============================
-# Python packaging / build
-# ==============================
-build/
-dist/
-*.egg-info/
-.eggs/
 
 # ==============================
 # Test / coverage caches
@@ -72,15 +76,15 @@ pnpm-debug.log*
 *.temp
 *.swp
 *.swo
-.DS_Store
-Thumbs.db
 
 # ==============================
-# IDE / editor
+# IDE / editor / OS
 # ==============================
 .vscode/
 .idea/
 *.code-workspace
+.DS_Store
+Thumbs.db
 
 # ==============================
 # Local databases
