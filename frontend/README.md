@@ -1,8 +1,3 @@
-Absolutely. Since the frontend is already implemented, the README should be written primarily as an **integration contract for the backend developer**: what each page expects, what is currently mocked, what APIs need to replace the mock data, expected request/response shapes, IDs/routes, and what the backend must return.
-
-Below is a detailed README you can put directly in `frontend/README.md`. It is based on the current frontend structure and mock-data layer from your uploaded PR description. 
-
----
 
 # ComplianceOS — Frontend
 
