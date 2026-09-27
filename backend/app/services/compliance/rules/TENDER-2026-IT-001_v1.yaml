@@ -1,0 +1,216 @@
+# ===================================================================
+# Tender Rulebook: TENDER-2026-IT-001
+# Version: 1.0
+#
+# IT Equipment Procurement 2026 — Demo Tender
+# This rulebook defines the compliance rules evaluated by the
+# compliance engine for this specific tender.
+# ===================================================================
+
+rulebook:
+  id: TENDER-2026-IT-001
+  version: "1.0"
+  tender_id: TENDER-2026-IT-001
+
+  rules:
+
+    # -----------------------------------------------------------------
+    # MANDATORY ELIGIBILITY
+    # -----------------------------------------------------------------
+
+    - id: GST_ACTIVE_ON_CLOSING_DATE
+      name: Bidder GST registration must be active on closing date
+      priority: mandatory
+      category: mandatory_eligibility
+      clause: "Clause 4.2, Page 7"
+      conditions:
+        requires_fact: gstin
+        requires_source: GST_DEMO
+        checks:
+          - field: gstStatus
+            operator: eq
+            value: "ACTIVE"
+      on_pass:
+        result: PASS
+      on_fail:
+        result: FAIL
+        severity: BLOCKER
+        message: "GST registration is not active on bid closing date."
+      on_missing_source:
+        result: SOURCE_UNAVAILABLE
+        severity: MEDIUM
+        message: "GST verification source unavailable."
+
+    - id: PAN_ENTITY_MATCH
+      name: PAN must match bidder identity
+      priority: mandatory
+      category: mandatory_eligibility
+      clause: "Clause 4.1, Page 6"
+      conditions:
+        requires_fact: pan
+        requires_source: PAN_DEMO
+        checks:
+          - field: pan
+            operator: eq
+            reference: bidder.pan
+          - field: name
+            operator: name_match
+            reference: bidder.legal_name
+      on_pass:
+        result: PASS
+      on_fail:
+        result: FAIL
+        severity: BLOCKER
+        message: "PAN does not match bidder identity."
+      on_missing_source:
+        result: SOURCE_UNAVAILABLE
+        severity: MEDIUM
+        message: "PAN verification source unavailable."
+
+    - id: UDYAM_VALID
+      name: Valid Udyam/MSME registration
+      priority: mandatory
+      category: mandatory_eligibility
+      clause: "Clause 5.1, Page 9"
+      when_applicable: tender.msme_mandatory
+      conditions:
+        requires_fact: udyamNumber
+        requires_source: UDYAM_DEMO
+        checks:
+          - field: status
+            operator: eq
+            value: "ACTIVE"
+      on_pass:
+        result: PASS
+      on_fail:
+        result: FAIL
+        severity: HIGH
+        message: "Udyam/MSME registration is not valid."
+      on_missing_fact:
+        result: NEEDS_CLARIFICATION
+        severity: HIGH
+        message: "Udyam certificate not submitted; required for this tender."
+      on_missing_source:
+        result: SOURCE_UNAVAILABLE
+        severity: MEDIUM
+        message: "Udyam verification source unavailable."
+
+    - id: OEM_AUTH_VALID
+      name: OEM authorisation must be valid on closing date
+      priority: mandatory
+      category: mandatory_eligibility
+      clause: "Clause 6.3, Page 12"
+      when_applicable: tender.oem_required
+      conditions:
+        requires_fact: oem_expiry_date
+        checks:
+          - field: oem_expiry_date
+            operator: after_or_eq
+            reference: tender.closing_date
+      on_pass:
+        result: PASS
+      on_fail:
+        result: FAIL
+        severity: HIGH
+        message: "OEM authorisation has expired or is invalid."
+      on_missing_fact:
+        result: NEEDS_CLARIFICATION
+        severity: HIGH
+        message: "OEM authorisation evidence not found."
+
+    - id: BLACKLIST_CHECK
+      name: Bidder must not be blacklisted or debarred
+      priority: mandatory
+      category: mandatory_eligibility
+      clause: "Clause 3.1, Page 4"
+      conditions:
+        requires_source: BLACKLIST_DEMO
+        checks:
+          - field: isBlacklisted
+            operator: eq
+            value: false
+      on_pass:
+        result: PASS
+      on_fail:
+        result: FAIL
+        severity: BLOCKER
+        message: "Bidder is blacklisted or debarred."
+      on_missing_source:
+        result: SOURCE_UNAVAILABLE
+        severity: MEDIUM
+        message: "Blacklist verification source unavailable."
+
+    # -----------------------------------------------------------------
+    # STATUTORY COMPLIANCE
+    # -----------------------------------------------------------------
+
+    - id: GST_RETURN_FILING
+      name: GST returns should be current
+      priority: recommended
+      category: statutory_compliance
+      clause: "Clause 4.3, Page 7"
+      conditions:
+        requires_source: GST_DEMO
+        checks:
+          - field: returnFilingStatus
+            operator: eq
+            value: "CURRENT"
+      on_pass:
+        result: PASS
+      on_fail:
+        result: NEEDS_CLARIFICATION
+        severity: MEDIUM
+        message: "GST returns are not current."
+      on_missing_source:
+        result: NOT_APPLICABLE
+        severity: LOW
+        message: "GST verification not available for return filing check."
+
+    - id: MCA_COMPANY_ACTIVE
+      name: Company must be active in MCA records
+      priority: recommended
+      category: statutory_compliance
+      clause: "Clause 4.4, Page 8"
+      conditions:
+        requires_source: MCA_DEMO
+        checks:
+          - field: companyStatus
+            operator: eq
+            value: "ACTIVE"
+      on_pass:
+        result: PASS
+      on_fail:
+        result: NEEDS_CLARIFICATION
+        severity: MEDIUM
+        message: "Company is not active in MCA records."
+      on_missing_source:
+        result: NOT_APPLICABLE
+        severity: LOW
+        message: "MCA verification not available."
+
+    # -----------------------------------------------------------------
+    # DOCUMENTATION
+    # -----------------------------------------------------------------
+
+    - id: MAKE_IN_INDIA_THRESHOLD
+      name: Local content meets Make in India threshold
+      priority: mandatory
+      category: documentation
+      clause: "Clause 7.1, Page 14"
+      when_applicable: tender.make_in_india_required
+      conditions:
+        requires_fact: localContentPercentage
+        checks:
+          - field: localContentPercentage
+            operator: gte
+            reference: tender.local_content_threshold
+      on_pass:
+        result: PASS
+      on_fail:
+        result: FAIL
+        severity: HIGH
+        message: "Declared local content is below the tender threshold."
+      on_missing_fact:
+        result: NEEDS_CLARIFICATION
+        severity: HIGH
+        message: "Local content declaration not found."
