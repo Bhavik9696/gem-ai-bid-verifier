@@ -154,6 +154,12 @@ VERIFICATIONS_CD_ASTER = [
         },
         checked_at="2026-09-25T10:03:00Z", evidence_reference="MCA company master",
     ),
+    VerificationResult(
+        source="BLACKLIST_DEMO", mode="DEMO", identifier="ABCDE1234F",
+        status="VERIFIED",
+        verified_facts={"isBlacklisted": False, "reason": None},
+        checked_at="2026-09-25T10:04:00Z", evidence_reference="Blacklist portal",
+    ),
 ]
 
 # Pre-computed match results for Aster (all EXACT, all confirmed)
