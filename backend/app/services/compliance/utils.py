@@ -7,6 +7,7 @@ and ID generation. No business logic — only data transformation.
 
 from __future__ import annotations
 
+import hashlib
 import re
 import uuid
 from datetime import date, datetime
@@ -137,6 +138,27 @@ def parse_date(value: str | None) -> date | None:
 def generate_finding_id() -> str:
     """Generate a unique finding ID using UUID v4."""
     return f"FND-{uuid.uuid4().hex[:12].upper()}"
+
+
+def generate_deterministic_finding_id(finding_type: str, *key_parts: str) -> str:
+    """
+    Generate a deterministic finding ID from the finding type and key
+    evidence components.
+
+    Same inputs always produce the same ID. Uses SHA-256 to ensure
+    uniqueness for distinct inputs while remaining collision-resistant.
+
+    Args:
+        finding_type: The finding type code (e.g. ``'PAN_MISMATCH'``).
+        *key_parts: Evidence strings that distinguish this finding from
+                    others of the same type (e.g. field values, source IDs).
+
+    Returns:
+        A ``FND-`` prefixed 12-character hex digest.
+    """
+    content = "|".join([finding_type] + [str(p) for p in key_parts])
+    digest = hashlib.sha256(content.encode("utf-8")).hexdigest()[:12].upper()
+    return f"FND-{digest}"
 
 
 def generate_id(prefix: str = "ID") -> str:

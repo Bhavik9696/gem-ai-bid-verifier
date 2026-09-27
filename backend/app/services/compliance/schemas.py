@@ -199,6 +199,17 @@ class TenderContext(BaseModel):
         description="Minimum local-content percentage (0–100) when Make in India applies",
     )
     msme_mandatory: bool = False
+    oem_required: bool = Field(
+        default=False,
+        description="True if tender requires OEM authorisation from the bidder",
+    )
+    mandatory_documents: list[str] = Field(
+        default_factory=list,
+        description=(
+            "List of document types that are mandatory for this tender, "
+            "e.g. ['GST_CERTIFICATE', 'PAN_CARD', 'UDYAM_CERTIFICATE']"
+        ),
+    )
 
 
 class BidComplianceInput(BaseModel):
