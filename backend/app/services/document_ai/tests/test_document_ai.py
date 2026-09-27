@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch
 
 from app.services.document_ai import process_document
