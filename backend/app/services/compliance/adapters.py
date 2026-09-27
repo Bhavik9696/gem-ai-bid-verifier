@@ -22,7 +22,13 @@ Usage example for Member 3's orchestrator::
     from app.services.compliance import evaluate_bid_compliance
 
     # In _evaluate_compliance():
-    compliance_input = build_compliance_input(bid, bidder, tender, db)
+    compliance_input = build_compliance_input(
+        bid,
+        bidder,
+        tender,
+        extracted_facts_rows,
+        verification_rows,
+    )
     assessment = evaluate_bid_compliance(compliance_input)
     persist_compliance_assessment(assessment, bid.bid_id, db)
 
@@ -102,7 +108,7 @@ def build_compliance_input(
         ExtractedFact(
             field=ef.field,
             value=ef.value,
-            confidence=ef.confidence or 1.0,
+            confidence=ef.confidence if ef.confidence is not None else 1.0,
             document_id=ef.document_id or "",
             page=ef.page,
             document_type=None,
