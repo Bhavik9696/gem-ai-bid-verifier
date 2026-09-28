@@ -1,144 +1,57 @@
 "use client";
-import { useState } from "react";
+
 import Link from "next/link";
-import { DEMO_BIDDERS, DEMO_RECOMMENDATIONS } from "@/lib/mockData";
-import { notFound } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { recordDecision, useBidWorkspace, type OfficerDecision } from "@/lib/api";
 
-export default function ReviewPage({ params }: { params: { bidderId: string } }) {
-  const bidder = DEMO_BIDDERS.find(b => b.id === params.bidderId);
-  if (!bidder) return notFound();
-  const rec = DEMO_RECOMMENDATIONS[params.bidderId as keyof typeof DEMO_RECOMMENDATIONS];
+type Action = "CONFIRM" | "REQUEST_CLARIFICATION" | "OVERRIDE";
 
-  const [action, setAction] = useState<"" | "confirm" | "clarify" | "override">("");
+export default function ReviewPage() {
+  const { bidderId: bidId } = useParams<{ bidderId: string }>();
+  const { bid, assessment, loading, error, reload } = useBidWorkspace(bidId);
+  const [action, setAction] = useState<Action | "">("");
   const [reason, setReason] = useState("");
-  const [comment, setComment] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
+  const [decision, setDecision] = useState<OfficerDecision | null>(null);
 
-  function submit() {
-    if ((action === "override" || action === "clarify") && !reason.trim()) return;
-    setSubmitted(true);
+  async function submit() {
+    if (!action || ((action === "OVERRIDE" || action === "REQUEST_CLARIFICATION") && !reason.trim())) return;
+    setSaving(true);
+    setRequestError(null);
+    try {
+      const result = await recordDecision(bidId, { decision: action, reason: reason.trim() || undefined, notes: notes.trim() || undefined });
+      setDecision(result);
+      reload();
+    } catch (problem) {
+      setRequestError(problem instanceof Error ? problem.message : "Could not record decision.");
+    } finally {
+      setSaving(false);
+    }
   }
 
-  if (submitted) {
-    return (
-      <div className="card" style={{ textAlign: "center", padding: 48, maxWidth: 540, margin: "40px auto" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>
-          {action === "confirm" ? "✅" : action === "clarify" ? "💬" : "🔴"}
-        </div>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", margin: "0 0 8px" }}>
-          {action === "confirm" ? "Bid Confirmed Compliant" : action === "clarify" ? "Clarification Requested" : "Bid Marked High-Risk"}
-        </h2>
-        <p style={{ color: "#64748b", margin: "0 0 24px" }}>
-          Your decision has been recorded in the audit trail with a timestamp and officer identity.
-        </p>
-        {reason && <div style={{ background: "#f8fafc", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#374151", marginBottom: 20, textAlign: "left" }}>
-          <strong>Reason:</strong> {reason}
-        </div>}
-        <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-          <Link href="/audit" className="btn btn-secondary">View Audit Trail</Link>
-          <Link href="/bidders" className="btn btn-primary">Back to Bidders</Link>
-        </div>
+  if (loading) return <p>Loading bid for review…</p>;
+  if (error || !bid) return <div className="card card-body" role="alert">{error ?? "Bid not found."}</div>;
+  if (decision) return <section className="card card-body"><h1>Decision recorded</h1><p>{decision.decision} · {decision.bidStatus}</p><p>Officer {decision.officerId} · {new Date(decision.decidedAt).toLocaleString("en-IN")}</p>{decision.reason && <p>Reason: {decision.reason}</p>}<Link href={`/bidders/${encodeURIComponent(bidId)}`} className="btn btn-primary">Return to bid</Link></section>;
+
+  return <>
+    <Link href={`/bidders/${encodeURIComponent(bidId)}`} className="card-link">← {bid.bidderName}</Link>
+    <h1>Officer decision</h1>
+    <div className="demo-banner">Decisions are written to the backend audit trail. Override and clarification require a reason.</div>
+    <div className="card card-body">
+      <p><strong>{bid.bidderName}</strong> · {bid.bidId} · {bid.tenderId}</p>
+      <p>Recommendation: {assessment?.recommendation ?? "No assessment yet"} · Risk: {assessment?.riskLevel ?? "Pending"}</p>
+      <div className="filter-bar" role="group" aria-label="Officer decision">
+        {([
+          ["CONFIRM", "Confirm"], ["REQUEST_CLARIFICATION", "Request clarification"], ["OVERRIDE", "Override"],
+        ] as const).map(([value, label]) => <button type="button" key={value} className={`filter-btn${action === value ? " active" : ""}`} onClick={() => setAction(value)}>{label}</button>)}
       </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="demo-banner">⚠️ Demo Mode — Officer decisions are recorded in the demo audit trail only.</div>
-      <div style={{ marginBottom: 16 }}>
-        <Link href={`/bidders/${bidder.id}/recommendation`} style={{ fontSize: 12, color: "#1a56db" }}>← Back to Recommendation</Link>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        {/* Summary */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div className="card">
-            <div className="card-header"><span className="card-title">📋 Bid Summary</span></div>
-            <div className="card-body">
-              {[
-                ["Bidder", bidder.legalName],
-                ["Bid ID", bidder.id],
-                ["Tender", "GEM/2025/B/47821"],
-                ["Compliance Score", `${bidder.complianceScore}%`],
-                ["Risk Level", bidder.riskLevel],
-                ["AI Recommendation", rec.status],
-                ["Conflicts", String(bidder.conflicts)],
-              ].map(([k, v]) => (
-                <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #f1f5f9", fontSize: 13 }}>
-                  <span style={{ color: "#64748b" }}>{k}</span>
-                  <span style={{ fontWeight: 600, color: "#0f172a" }}>{v}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "14px 18px" }}>
-            <div style={{ fontWeight: 700, color: "#92400e", marginBottom: 6 }}>⚖️ Procurement Officer's Authority</div>
-            <p style={{ fontSize: 12, color: "#374151", margin: 0, lineHeight: 1.6 }}>
-              The AI Recommendation is decision-support only. You have full authority to confirm, request clarification, or override. Your reasoning will be recorded in the audit trail.
-            </p>
-          </div>
-        </div>
-
-        {/* Decision panel */}
-        <div className="card">
-          <div className="card-header"><span className="card-title">👨‍⚖️ Officer Decision</span></div>
-          <div className="card-body">
-            <p style={{ fontSize: 13, color: "#374151", margin: "0 0 16px" }}>Select an action for <strong>{bidder.legalName}</strong>:</p>
-
-            {/* Action buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-              {[
-                { key: "confirm", label: "🟢 Confirm Compliant", sub: "Accepts the AI recommendation and confirms the bid meets all eligibility conditions.", color: "#059669", bg: "#f0fdf4", border: "#bbf7d0" },
-                { key: "clarify", label: "🟡 Request Clarification", sub: "Issue a formal clarification notice to the bidder for missing or unclear evidence.", color: "#d97706", bg: "#fffbeb", border: "#fde68a" },
-                { key: "override", label: "🔴 Override / Reject", sub: "Override the AI recommendation. Mandatory reason required.", color: "#dc2626", bg: "#fef2f2", border: "#fecaca" },
-              ].map(a => (
-                <div key={a.key} onClick={() => setAction(a.key as any)}
-                  style={{ padding: "14px 16px", borderRadius: 10, border: `2px solid ${action === a.key ? a.color : "#e2e8f0"}`,
-                    background: action === a.key ? a.bg : "white", cursor: "pointer", transition: "all 0.15s" }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: a.color }}>{a.label}</div>
-                  <div style={{ fontSize: 12, color: "#64748b", marginTop: 3 }}>{a.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            {(action === "clarify" || action === "override") && (
-              <div className="form-group" style={{ marginBottom: 12 }}>
-                <label className="form-label">
-                  {action === "override" ? "⚠️ Override Reason (mandatory)" : "💬 Clarification Note (mandatory)"}
-                </label>
-                <textarea
-                  className="form-input"
-                  rows={4}
-                  placeholder={action === "override" ? "Explain why you are overriding the AI recommendation..." : "Describe what clarification is required from the bidder..."}
-                  value={reason}
-                  onChange={e => setReason(e.target.value)}
-                  style={{ resize: "vertical" }}
-                />
-              </div>
-            )}
-
-            {action && (
-              <div className="form-group" style={{ marginBottom: 16 }}>
-                <label className="form-label">Additional Comments (optional)</label>
-                <textarea className="form-input" rows={2} placeholder="Internal notes..." value={comment} onChange={e => setComment(e.target.value)} style={{ resize: "none" }} />
-              </div>
-            )}
-
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                className={`btn btn-lg ${action === "confirm" ? "btn-success" : action === "clarify" ? "btn-warning" : action === "override" ? "btn-danger" : "btn-secondary"}`}
-                style={{ flex: 1 }}
-                disabled={!action || ((action === "override" || action === "clarify") && !reason.trim())}
-                onClick={submit}
-              >
-                {action ? `Confirm: ${action.charAt(0).toUpperCase() + action.slice(1)} →` : "Select an action above"}
-              </button>
-              <Link href={`/bidders/${bidder.id}`} className="btn btn-secondary btn-lg">Cancel</Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+      {(action === "REQUEST_CLARIFICATION" || action === "OVERRIDE") && <label className="form-group"><span className="form-label">Reason (required)</span><textarea className="form-input" rows={4} value={reason} onChange={event => setReason(event.target.value)} /></label>}
+      {action && <label className="form-group"><span className="form-label">Notes (optional)</span><textarea className="form-input" rows={3} value={notes} onChange={event => setNotes(event.target.value)} /></label>}
+      {requestError && <p role="alert" style={{ color: "#b91c1c" }}>{requestError}</p>}
+      <button className="btn btn-primary" disabled={!action || saving || ((action === "OVERRIDE" || action === "REQUEST_CLARIFICATION") && !reason.trim())} onClick={submit}>{saving ? "Recording…" : "Record decision"}</button>
+    </div>
+  </>;
 }

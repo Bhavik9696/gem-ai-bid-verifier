@@ -1,5 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { useApiData } from "@/lib/api";
 
 const TITLES: Record<string, { title: string; subtitle: string }> = {
   "/dashboard": { title: "Dashboard", subtitle: "Real-time insights for faster, fairer and more transparent procurement." },
@@ -23,6 +24,7 @@ const TITLES: Record<string, { title: string; subtitle: string }> = {
 
 export default function TopBar() {
   const pathname = usePathname();
+  const health = useApiData<{ status: string; service: string; version: string }>("/health");
   const info = TITLES[pathname] ?? { title: "ComplianceOS", subtitle: "GeM AI Bid Verifier" };
   const now = new Date();
   const updated = now.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -39,19 +41,16 @@ export default function TopBar() {
         <div style={{ fontSize: 11, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
           <span>📅</span> Last Updated: {updated}
         </div>
-        <div className="system-status">
-          <span className="status-dot" />
-          System Online
+        <div className="system-status" title={health.data?.service ?? health.error ?? "Checking backend health"}>
+          <span className="status-dot" style={{ background: health.error ? "#dc2626" : health.loading ? "#d97706" : "#059669" }} />
+          {health.error ? "API Offline" : health.loading ? "Checking API" : `API ${health.data?.status ?? "Online"}`}
         </div>
         {/* GeM logo area */}
         <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
           <span style={{ fontSize: 14 }}>🇮🇳</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>GeM</span>
         </div>
-        <div className="topbar-badge">
-          <span className="demo-dot" />
-          DEMO MODE
-        </div>
+        {!health.error && health.data && <div className="topbar-badge"><span className="demo-dot" />Core API {health.data.version}</div>}
         <div className="avatar" title="Officer Sharma">OS</div>
       </div>
     </header>

@@ -8,41 +8,18 @@ const NAV = [
     section: "Tenders",
     items: [
       { href: "/tenders", label: "All Tenders", icon: "📋" },
-      { href: "/tenders/import", label: "Import Tender", icon: "⬆️" },
-      { href: "/tenders/rules", label: "Tender Rules", icon: "📐" },
+      { href: "/tenders/import", label: "Data Ingestion", icon: "⬆️" },
     ],
   },
   {
     section: "Evaluation",
-    items: [
-      { href: "/bidders", label: "Bidders", icon: "👥" },
-      { href: "/documents", label: "Documents", icon: "📄" },
-      { href: "/verification", label: "Verification", icon: "🔍" },
-      { href: "/conflicts", label: "Conflicts", icon: "⚠️" },
-      { href: "/compliance", label: "Compliance", icon: "✅" },
-    ],
-  },
-  {
-    section: "Decision",
-    items: [
-      { href: "/recommendations", label: "Recommendations", icon: "🤖" },
-      { href: "/clarifications", label: "Clarifications", icon: "💬" },
-      { href: "/review", label: "Officer Review", icon: "👨‍⚖️" },
-    ],
+    items: [{ href: "/bidders", label: "Bids & Review", icon: "👥" }],
   },
   {
     section: "Reporting",
     items: [
       { href: "/audit", label: "Audit Trail", icon: "📅" },
       { href: "/reports", label: "Reports", icon: "📊" },
-    ],
-  },
-  {
-    section: "Admin",
-    items: [
-      { href: "/admin/connectors", label: "Connectors", icon: "🔌" },
-      { href: "/admin/users", label: "Users & Roles", icon: "👤" },
-      { href: "/settings", label: "Settings", icon: "⚙️" },
     ],
   },
 ];

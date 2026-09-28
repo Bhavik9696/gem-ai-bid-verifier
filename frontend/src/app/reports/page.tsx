@@ -1,136 +1,83 @@
 "use client";
-import { useState } from "react";
-import { DEMO_BIDDERS } from "@/lib/mockData";
 
-const REPORTS = [
-  {
-    id: "TR-001", title: "Tender Compliance Report",
-    desc: "Complete compliance evaluation summary for all bidders in GEM/2025/B/47821.",
-    type: "Compliance", icon: "✅", status: "Ready",
-  },
-  {
-    id: "TR-002", title: "Risk Assessment Report",
-    desc: "Risk scoring, conflict summary, and high-risk bidder details.",
-    type: "Risk", icon: "⚠️", status: "Ready",
-  },
-  {
-    id: "TR-003", title: "Verification Report",
-    desc: "Source connector results, mode (DEMO/LIVE), and verification status per bidder.",
-    type: "Verification", icon: "🔍", status: "Ready",
-  },
-  {
-    id: "TR-004", title: "Audit Trail Report",
-    desc: "Full event timeline with timestamps, actors, and decision records.",
-    type: "Audit", icon: "📅", status: "Ready",
-  },
-  {
-    id: "TR-005", title: "Bidder Evaluation Report",
-    desc: "Individual bidder profile, extracted fields, and rule results.",
-    type: "Bidder", icon: "👥", status: "Ready",
-  },
-];
+import { useEffect, useState } from "react";
+import { apiRequest, useApiData, type Assessment, type Bid, type Tender } from "@/lib/api";
+
+function downloadFile(filename: string, content: string, type: string) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function csvValue(value: unknown) {
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+async function optionalAssessment(bidId: string) {
+  try {
+    return await apiRequest<Assessment>(`/api/bids/${encodeURIComponent(bidId)}/assessment`);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("No verification assessment")) return null;
+    throw error;
+  }
+}
 
 export default function ReportsPage() {
-  const [generating, setGenerating] = useState<string | null>(null);
-  const [done, setDone] = useState<string[]>([]);
+  const tenders = useApiData<Tender[]>("/api/tenders");
+  const [selectedTenderId, setSelectedTenderId] = useState<string | null>(null);
+  const tenderId = selectedTenderId ?? tenders.data?.[0]?.tenderId ?? "";
+  const bids = useApiData<Bid[]>(tenderId ? `/api/tenders/${encodeURIComponent(tenderId)}/bids` : null);
+  const [assessmentResult, setAssessmentResult] = useState<{ key: string; assessments: Record<string, Assessment | null>; error: string | null } | null>(null);
+  const assessmentKey = (bids.data ?? []).map(bid => bid.bidId).join("|");
+  const tender = tenders.data?.find(item => item.tenderId === tenderId);
 
-  function generate(id: string) {
-    setGenerating(id);
-    setTimeout(() => {
-      setGenerating(null);
-      setDone(p => [...p, id]);
-    }, 1500);
-  }
+  useEffect(() => {
+    if (!bids.data) return;
+    let active = true;
+    Promise.all(bids.data.map(async bid => [bid.bidId, await optionalAssessment(bid.bidId)] as const))
+      .then(results => { if (active) setAssessmentResult({ key: assessmentKey, assessments: Object.fromEntries(results), error: null }); })
+      .catch(problem => { if (active) setAssessmentResult({ key: assessmentKey, assessments: {}, error: problem instanceof Error ? problem.message : "Could not load assessments." }); });
+    return () => { active = false; };
+  }, [bids.data, assessmentKey]);
 
-  return (
-    <>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 24 }}>
-        {[
-          { label: "Reports Ready", value: REPORTS.length, color: "#059669", bg: "#f0fdf4" },
-          { label: "Tender", value: "GEM/2025/B/47821", color: "#1e40af", bg: "#eff6ff" },
-          { label: "Bidders Evaluated", value: "3", color: "#7c3aed", bg: "#f5f3ff" },
-        ].map(c => (
-          <div key={c.label} style={{ background: c.bg, border: `1px solid ${c.color}22`, borderRadius: 10, padding: "14px 18px" }}>
-            <div style={{ fontSize: 11, color: c.color, fontWeight: 700 }}>{c.label}</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: c.color }}>{c.value}</div>
-          </div>
-        ))}
+  const currentAssessments = assessmentResult?.key === assessmentKey ? assessmentResult : null;
+  const assessments = currentAssessments?.assessments ?? {};
+  const loadingAssessments = Boolean(bids.data) && !currentAssessments;
+  const error = currentAssessments?.error ?? null;
+  const assessedCount = Object.values(assessments).filter(Boolean).length;
+  const csvRows = (bids.data ?? []).map(bid => {
+    const assessment = assessments[bid.bidId];
+    return [bid.bidId, bid.bidderName, bid.status, bid.bidAmount, bid.currency, assessment?.complianceScore ?? "", assessment?.verificationCoverage ?? "", assessment?.riskLevel ?? "", assessment?.recommendation ?? ""];
+  });
+
+  if (tenders.loading) return <p>Loading reports…</p>;
+  if (tenders.error) return <div className="card card-body" role="alert">{tenders.error}</div>;
+
+  return <>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 18 }}>
+      <div><h1>Evaluation reports</h1><p>Export backend bid summaries and available assessments.</p></div>
+      <select className="form-select" aria-label="Select tender" value={tenderId} onChange={event => setSelectedTenderId(event.target.value)}>
+        {(tenders.data ?? []).map(item => <option key={item.tenderId} value={item.tenderId}>{item.referenceNumber}</option>)}
+      </select>
+    </div>
+    <div className="stat-cards">{[
+      ["Tender", tender?.referenceNumber ?? "—"], ["Bids", bids.data?.length ?? 0], ["Assessed", loadingAssessments ? "…" : assessedCount],
+    ].map(([label, value]) => <div className="stat-card" key={label}><div className="stat-card-label">{label}</div><div className="stat-card-value">{value}</div></div>)}</div>
+    {(bids.error || error) && <div className="card card-body mt-4" role="alert">{bids.error ?? error}</div>}
+    <div className="card card-body mt-4">
+      <strong>Export current tender data</strong><p>CSV contains bid summaries and assessment scores. JSON contains the full returned assessment payloads.</p>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button className="btn btn-primary" disabled={!bids.data?.length || loadingAssessments} onClick={() => downloadFile(`${tenderId}-evaluation.csv`, [["Bid ID", "Bidder", "Status", "Amount", "Currency", "Compliance", "Verification coverage", "Risk", "Recommendation"], ...csvRows].map(row => row.map(csvValue).join(",")).join("\n"), "text/csv")}>Export CSV</button>
+        <button className="btn btn-secondary" disabled={!bids.data?.length || loadingAssessments} onClick={() => downloadFile(`${tenderId}-assessments.json`, JSON.stringify({ tender, bids: bids.data, assessments }, null, 2), "application/json")}>Export JSON</button>
       </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
-        {REPORTS.map(r => (
-          <div key={r.id} className="card" style={{ padding: 0 }}>
-            <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{ fontSize: 28, flexShrink: 0 }}>{r.icon}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 15, color: "#0f172a" }}>{r.title}</div>
-                <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{r.desc}</div>
-                <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
-                  <span className="badge badge-blue" style={{ fontSize: 10 }}>{r.type}</span>
-                  <span className="badge badge-gray" style={{ fontSize: 10 }}>{r.id}</span>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                {done.includes(r.id) ? (
-                  <>
-                    <button className="btn btn-success btn-sm">✅ Download PDF</button>
-                    <button className="btn btn-secondary btn-sm">📊 Export CSV</button>
-                  </>
-                ) : (
-                  <button
-                    className="btn btn-primary btn-sm"
-                    onClick={() => generate(r.id)}
-                    disabled={generating === r.id}
-                  >
-                    {generating === r.id ? "⏳ Generating..." : "📄 Generate"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Bidder-wise summary */}
-      <div className="card">
-        <div className="card-header"><span className="card-title">👥 Per-Bidder Evaluation Summary</span></div>
-        <div style={{ overflowX: "auto" }}>
-          <table className="data-table">
-            <thead>
-              <tr><th>Bidder</th><th>Bid ID</th><th>Compliance</th><th>Risk</th><th>Conflicts</th><th>Status</th><th>Report</th></tr>
-            </thead>
-            <tbody>
-              {DEMO_BIDDERS.map(b => (
-                <tr key={b.id}>
-                  <td style={{ fontWeight: 600 }}>{b.legalName}</td>
-                  <td style={{ fontFamily: "monospace", fontSize: 11 }}>{b.id}</td>
-                  <td style={{ fontWeight: 700, color: b.complianceScore >= 90 ? "#059669" : b.complianceScore >= 75 ? "#d97706" : "#dc2626" }}>
-                    {b.complianceScore}%
-                  </td>
-                  <td>
-                    <span className={`badge ${b.riskLevel === "Low" ? "badge-green" : b.riskLevel === "High" ? "badge-red" : "badge-orange"}`}>
-                      {b.riskLevel}
-                    </span>
-                  </td>
-                  <td style={{ textAlign: "center", fontWeight: 700, color: b.conflicts > 0 ? "#dc2626" : "#059669" }}>
-                    {b.conflicts}
-                  </td>
-                  <td>
-                    <span className={`badge ${b.status === "Compliant" ? "badge-green" : b.status === "High-Risk" ? "badge-red" : "badge-yellow"}`}>
-                      {b.statusLabel}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="btn btn-secondary btn-sm" onClick={() => alert(`Generating for ${b.legalName}...`)}>
-                      Generate Report
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
-  );
+    </div>
+    <div className="card mt-4"><div style={{ overflowX: "auto" }}><table className="data-table">
+      <thead><tr><th>Bidder</th><th>Bid ID</th><th>Compliance</th><th>Risk</th><th>Recommendation</th><th>Status</th></tr></thead>
+      <tbody>{(bids.data ?? []).map(bid => { const assessment = assessments[bid.bidId]; return <tr key={bid.bidId}><td>{bid.bidderName}</td><td>{bid.bidId}</td><td>{assessment ? `${assessment.complianceScore}%` : "Not assessed"}</td><td>{assessment?.riskLevel ?? "—"}</td><td>{assessment?.recommendation ?? "—"}</td><td>{bid.status}</td></tr>; })}
+        {!bids.data?.length && <tr><td colSpan={6}>No bids are available for this tender.</td></tr>}</tbody>
+    </table></div></div>
+  </>;
 }
