@@ -15,13 +15,16 @@ export default function BidProfilePage() {
   const { bid, assessment, loading, error, reload } = useBidWorkspace(bidId);
   const [running, setRunning] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   async function startVerification() {
     setRunning(true);
     setActionError(null);
+    setActionSuccess(null);
     try {
       await runVerification(bidId);
       reload();
+      setActionSuccess("Verification completed successfully.");
     } catch (reason) {
       setActionError(reason instanceof Error ? reason.message : "Verification failed.");
     } finally {
@@ -48,8 +51,13 @@ export default function BidProfilePage() {
           </div>
           {bid.submittedAt && <p>Submitted {new Date(bid.submittedAt).toLocaleString("en-IN")}</p>}
           {assessment?.recommendationSummary && <p>{assessment.recommendationSummary}</p>}
-          {!assessment && <div style={{ marginTop: 18 }}><button className="btn btn-primary" disabled={running} onClick={startVerification}>{running ? "Running verification…" : "Run verification"}</button></div>}
-          {actionError && <p role="alert" style={{ color: "#b91c1c" }}>{actionError}</p>}
+          <div style={{ marginTop: 18 }}>
+            <button className="btn btn-primary" disabled={running} onClick={startVerification}>
+              {running ? "Running verification…" : (assessment ? "Re-run Verification" : "Run verification")}
+            </button>
+          </div>
+          {actionError && <p role="alert" style={{ color: "#b91c1c", marginTop: 8 }}>{actionError}</p>}
+          {actionSuccess && <p role="alert" style={{ color: "#15803d", marginTop: 8 }}>{actionSuccess}</p>}
         </div>
       </section>
 
