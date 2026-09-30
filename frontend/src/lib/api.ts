@@ -45,13 +45,21 @@ export type Assessment = {
   recommendation: string;
   recommendationSummary: string | null;
   hasMandatoryFailure: boolean;
-  scoreBreakdown: Record<string, unknown>[];
+  scoreBreakdown: ScoreBreakdown[];
   evaluatedAt: string;
   ruleResults: RuleResult[];
   findings: Finding[];
   verificationResults: VerificationResult[];
   extractedFacts: ExtractedFact[];
   auditEvents: AuditEvent[];
+};
+
+export type ScoreBreakdown = {
+  category: string;
+  weight: number;
+  fulfilled: number;
+  rulesPassed: number;
+  rulesTotal: number;
 };
 
 export type RuleResult = {
